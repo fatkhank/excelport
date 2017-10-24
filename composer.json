@@ -1,0 +1,39 @@
+{
+    "name": "hamba/excelport",
+    "description": "Tools for import and export excel in laravel",
+    "authors": [{
+        "name": "fatkhank",
+        "email": "fatkhan.khoirurridlo@gmail.com"
+    }],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.0.0",
+        "illuminate/support": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*|5.5.*",
+        "maatwebsite/excel": "~2.1.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src"
+        ],
+        "psr-4": {
+            "Hamba\\ExcelPort\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hamba\\ExcelPort\\ExcelPortServiceProvider"
+            ],
+            "aliases": {
+                "ImportExcel": "Hamba\\ExcelPort\\ImportManager",
+                "ExportExcel": "Hamba\\ExcelPort\\ExportManager"
+            }
+        }
+    }
+}
