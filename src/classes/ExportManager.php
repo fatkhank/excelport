@@ -8,7 +8,6 @@ class ExportManager
 {
     public $availableFormats = ['xls', 'xlsx', 'csv'];
 
-    
     protected $excel;
 
     protected $headings;
@@ -24,7 +23,7 @@ class ExportManager
      */
     public function template($templateName)
     {
-        $templatePath = config('xltools.template_path', 'storage/app/excel/templates/').$templateName;
+        $templatePath = config('xlport.template_path', 'storage/app/excel/templates/').$templateName;
         
         //get subtemplate
         $subtemplate= request('template');
@@ -72,7 +71,7 @@ class ExportManager
             });
         }
 
-        //todo fill only attribute specified in header
+        //fill only attribute specified in header
         $sheet->fromArray($rows, null, $startCell, false, false);
         return $this;
     }
