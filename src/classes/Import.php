@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Import extends Model
 {
-    use \Hamba\QueryTools\Selectable;
-    use \Hamba\QueryTools\Filterable;
-    use \Hamba\QueryTools\Sortable;
+    use \Hamba\QueryGet\Selectable;
+    use \Hamba\QueryGet\Filterable;
+    use \Hamba\QueryGet\Sortable;
 
     const STATE_UPLOADING = 'UPLOADING';
     const STATE_UPLOADED = 'UPLOADED';
@@ -33,7 +33,7 @@ class Import extends Model
     /**
      * Processing success
      */
-    const STATE_PROCESSED = 'PROCESSING';
+    const STATE_PROCESSED = 'PROCESSED';
 
     /**
      * Fail to process

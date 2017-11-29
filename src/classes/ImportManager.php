@@ -5,6 +5,7 @@ namespace Hamba\ExcelPort;
 use \Maatwebsite\Excel\Facades\Excel;
 use \Ramsey\Uuid\Uuid;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Route;
 
 class ImportManager
 {
@@ -55,7 +56,7 @@ class ImportManager
     public function getAction()
     {
         if (!$this->action) {
-            $action = request('import_action');
+            $action = request('import_action', 'auto');
             if ($action) {
                 $this->action = strtolower($action);
             }
@@ -134,7 +135,7 @@ class ImportManager
     {
         if ($this->import) {
             $job::dispatch($this->import, $this->action)
-            ->onQueue(config('xltools.import_queue'));
+            ->onQueue(config('xlport.import_queue'));
         }
     }
 
@@ -148,5 +149,44 @@ class ImportManager
         return response()->json([
             'id' =>  $this->import->uuid
         ]);
+    }
+
+    /**
+     * Binds Import routes into the controller.
+     *
+     * @param  callable|null  $callback
+     * @param  array  $options
+     * @return void
+     */
+    public static function routes(array $options = [])
+    {
+        //parse options component
+        $webOptions = array_get($options, 'web', []);
+        $apiOptions = array_get($options, 'api', []);
+
+        //setup web
+        $defaultOptions = [
+            'namespace' => '\Hamba\ExcelPort\Controllers',
+        ];
+        $webOptions = array_merge($defaultOptions, $webOptions);
+
+        Route::group($webOptions, function ($router){
+            Route::get('imports/{uuid}/result', '\Hamba\ExcelPort\Controllers\ImportController@downloadResult');
+        });
+
+        //setup api
+        $defaultOptions = [
+            'prefix' => 'api',
+            'namespace' => '\Hamba\ExcelPort\Controllers',
+        ];
+        $apiOptions = array_merge($defaultOptions, $apiOptions);
+
+        Route::group($apiOptions, function ($router){
+            $router->get('imports/', 'ImportController@index');
+            $router->post('imports/{uuid}/cancel', 'ImportController@cancel');
+            $router->post('imports/{uuid}/stop', 'ImportController@stop');
+            $router->get('imports/{uuid}/result', 'ImportController@downloadResult');
+            $router->get('imports/{uuid}/status', 'ImportController@showStatus');
+        });
     }
 }

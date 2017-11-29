@@ -6,16 +6,10 @@ use Hamba\ExcelPort\Import;
 use Storage;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ImportController extends BaseController
-{
-    use AuthorizesRequests{
-        authorize as protected traitAuthorize;
-    }
-    
+{    
     use ValidatesRequests;
-    use \App\Traits\QueryRequest;
 
     /**
      * Display a listing of the resource.
@@ -24,15 +18,15 @@ class ImportController extends BaseController
      */
     public function index()
     {
-        $query = Import::query();
-        $this->useSelect($query, Import::class);
-        $this->useSort($query, Import::class);
-        $this->useFilter($query, Import::class);
+        $qg = qg(Import::class)->apply();
         
         //select mine
-        $query->where('user_id', request()->user()->id);
-
-        return $this->resultList($query);
+        $user = request()->user();
+        if($user){
+            $qg->query->where('user_id', $user->id);
+        }
+        
+        return $qg->get();
     }
 
     /**
@@ -43,9 +37,7 @@ class ImportController extends BaseController
      */
     public function showStatus($uuid)
     {
-        $query = Import::where('uuid', $uuid);
-        $this->useSelect($query, Import::class);
-        return $query->firstOrFail();
+        return qg(Import::where('uuid', $uuid))->select()->fof();
     }
 
     /**
@@ -81,7 +73,7 @@ class ImportController extends BaseController
      */
     public function show($uuid)
     {
-        $query = Import::where('uuid', $uuid);
+        $query = qg(Import::where('uuid', $uuid))->select;
         $this->useSelect($query, Import::class);
         //TODO show content
         //custom select content

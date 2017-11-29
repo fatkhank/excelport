@@ -20,7 +20,6 @@ class ExcelPortServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
         $this->loadMigrationsFrom(__DIR__.'/migrations');
     }
 
@@ -32,7 +31,7 @@ class ExcelPortServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/config/xltools.php', 'xltools'
+            __DIR__.'/config/xlport.php', 'xlport'
         );
 
         $this->app->singleton(ImportManager::class, function($app){
